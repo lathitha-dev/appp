@@ -1,0 +1,56 @@
+let currentPlayer = "X";
+let board = ["", "", "", "", "", "", "", "", ""];
+
+function handleMove(index) {
+    if (board[index] === "") {
+        board[index] = currentPlayer;
+        document.getElementsByClassName("cell")[index].innerText = currentPlayer;
+        if (checkWinner()) {
+            document.getElementById("status").innerText = currentPlayer + " wins!";
+            disableBoard();
+        } else if (board.every(cell => cell !== "")) {
+            document.getElementById("status").innerText = "It's a draw!";
+        } else {
+            currentPlayer = currentPlayer === "X" ? "O" : "X";
+            document.getElementById("status").innerText = "Player " + currentPlayer + "'s turn";
+        }
+    }
+}
+
+function checkWinner() {
+    const winningConditions = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6]
+    ];
+    return winningConditions.some(condition => {
+        const [a, b, c] = condition;
+        return board[a] && board[a] === board[b] && board[a] === board[c];
+    });
+}
+
+function disableBoard() {
+    const cells = document.getElementsByClassName("cell");
+    for (let i = 0; i < cells.length; i++) {
+        cells[i].removeAttribute("onclick");
+    }
+}
+
+function resetGame() {
+    currentPlayer = "X";
+    board = ["", "", "", "", "", "", "", "", ""];
+    const cells = document.getElementsByClassName("cell");
+    for (let i = 0; i < cells.length; i++) {
+        cells[i].innerText = "";
+        cells[i].setAttribute("onclick", "handleMove(" + i + ")");
+    }
+    document.getElementById("status").innerText = "Player X's turn";
+}
+
+
+
